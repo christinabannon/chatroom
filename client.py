@@ -13,7 +13,7 @@ UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
-received_packets = Queue.Queue()
+# received_packets = Queue.Queue()
 
 print("Enter your name")
 name = sys.stdin.readline().strip()
@@ -47,4 +47,6 @@ try:
     while 1: 
         time.sleep(0.01)
 except KeyboardInterrupt: 
-    print("bye")
+    print("\n<<< bye >>>")
+    message = "QUIT!!!"
+    sock.sendto(message, (UDP_IP, UDP_PORT))
