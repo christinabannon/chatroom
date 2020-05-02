@@ -46,19 +46,18 @@ def add(data, addr):
     client_addresses.append(addr)
     client_user_names.append(user_name)
     print("new address : " + str(addr) + "  " + user_name)
-    intro_message = "<< " + user_name + " has entered the chat. >>"
+    intro_message = "<< " + user_name + " has joined the chat. >>\n    q"
     broadcast(intro_message, addr)
 
-def make_username(data, addr):
-    potential_user_name = data
-    user_name = potential_user_name + "#" + str(addr[1]) + "#" + str(addr[0]) 
+def make_username(name, addr):
+    user_name = name + "#" + str(addr[1]) + "#" + str(addr[0]) 
     return user_name
 
 def remove(addr): 
     user_name = client_user_names[client_addresses.index(addr)]
     client_addresses.remove(addr)
     client_user_names.remove(user_name)
-     exit_message = "<< " + user_name + " has left the chat. >>\n"
+    exit_message = "<< " + user_name + " has left the chat. >>\n"
     broadcast(exit_message, addr)
   
 while True: 

@@ -9,6 +9,7 @@ UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+# first message to server contains the name
 print("< Enter your name to join the chat! > ")
 name = sys.stdin.readline().strip()
 sock.sendto(name, (UDP_IP, UDP_PORT))

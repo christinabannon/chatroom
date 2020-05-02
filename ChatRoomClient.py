@@ -1,35 +1,51 @@
-# Python program to implement client side of chat room. 
-import socket 
-import select 
-import sys 
+import socket
+import sys
+import os
+from thread import * 
+import time
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+#UDP_IP = "127.0.0.1"
+#UDP_PORT = 5005
 
-IP_address = '127.0.0.1'
-Port = 65433
-server.connect((IP_address, Port)) 
-print("Enter your name:")
+print("< Enter the IP of the server > ")
+UDP_IP = sys.stdin.readline().strip()
+print("< Enter the port of the server > ")
+UDP_PORT = int(sys.stdin.readline().strip())
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# first message to server contains the name
+print("< Enter your name to join the chat! > ")
 name = sys.stdin.readline().strip()
-server.send(name)
+sock.sendto(name, (UDP_IP, UDP_PORT))
 
-message = ""
-quit_code = "QUIT!!!"
+# receives data from server and prints it to chat
+def receive_data(): 
+    while True: 
+        data, addr = sock.recvfrom(2048)
+        print(data)
 
-while message != quit_code: 
-    # maintains a list of possible input streams 
-    sockets_list = [sys.stdin, server] 
-    read_sockets,write_socket, error_socket = select.select(sockets_list,[],[]) 
-  
-    for socks in read_sockets: 
-        if socks == server: 
-            message = socks.recv(2048) 
-            print(message) 
-        else: 
-            message = sys.stdin.readline() 
-            server.send(message) 
-            sys.stdout.write("< You >") 
-            sys.stdout.write(message) 
-            sys.stdout.flush() 
-            if message == quit_code : 
-                break
-sys.exit()
+# sends the chat message to the server
+def send_message(): 
+    while True: 
+        try: 
+            message = sys.stdin.readline()
+            if message:  
+                sock.sendto(message, (UDP_IP, UDP_PORT))
+                print("< You > " + message)
+            sys.stdin.flush()
+        except: 
+            break
+
+def exit_chat(): 
+    print("\n<<< bye >>>")
+    message = "QUIT!!!"
+    sock.sendto(message, (UDP_IP, UDP_PORT))
+
+start_new_thread(send_message, ())
+start_new_thread(receive_data, ())
+
+try: 
+    while 1: 
+        time.sleep(0.01)
+except KeyboardInterrupt: 
+    exit_chat()
